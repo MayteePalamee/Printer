@@ -1,51 +1,62 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Printer
+using System.IO.Ports;
+namespace SlipPrinter
 {
-    public class Printers
+    /// <summary>
+    /// printer
+    /// </summary>
+    public class Printer
     {
-        /**
-      * event delegate.
-      * Declare the event using EventHandler<T>
-      **/
-
-        public event EventHandler<Events> RaiseEvents;
-
-        /**
-         * delegate method handle raise event
-         **/
-        protected virtual void OnRaiseEvent(Events e)
+        private SerialPort _serialPort = new SerialPort();
+        /// <summary>
+        /// setter port printer
+        /// </summary>
+        /// <param name="PortName">port name</param>
+        public void SetPort(String PortName)
         {
-            RaiseEvents?.Invoke(this, e);
+            _serialPort.PortName = PortName;
+            _serialPort.BaudRate = 9600;
+            _serialPort.NewLine = "\n";
         }
-
-        Status status;
-        public Status Connect()
+        /// <summary>
+        /// getter port name
+        /// </summary>
+        /// <returns>port name</returns>
+        public string GetPort()
         {
-            status = new Status();
-            try
-            {
-
-            }catch(Exception e)
-            {
-
-            }
-            return status;
+            return _serialPort.PortName == null ? "" : _serialPort.PortName;
         }
-        public Boolean Printing()
+        /// <summary>
+        /// get current status
+        /// </summary>
+        /// <returns>status printer</returns>
+        public string CurrentStatus()
         {
             try
             {
 
-            }catch(Exception e)
+            }catch(Exception exception)
             {
-
+                Console.WriteLine("exception : " + exception);
             }
-            return true;
+            return null;
+        }
+        /// <summary>
+        /// Print Content
+        /// </summary>
+        /// <param name="content"></param>
+        public void Print(String content)
+        {
+            try
+            {
+                if (_serialPort.IsOpen)
+                {
+                    _serialPort.WriteLine(content);
+                }
+            }catch(Exception exception)
+            {
+                Console.WriteLine("exception : " + exception);
+            }
         }
     }
 }
